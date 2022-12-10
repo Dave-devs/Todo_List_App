@@ -3,22 +3,22 @@ package com.example.todolistapp.data
 import kotlinx.coroutines.flow.Flow
 
 class TodoRepositoryImpl(
-    private val dao: TodoDao
+    private val todoDao: TodoDao
 ): TodoRepository {
 
-    override suspend fun insertTodo(todo: Todo) {
-        dao.insertTodo(todo)
-    }
-
-    override suspend fun deleteTodo(todo: Todo) {
-        dao.deleteTodo(todo)
+    override fun getTodos(): Flow<List<Todo>> {
+        return todoDao.getTodos()
     }
 
     override suspend fun getTodoById(id: Int): Todo? {
-        return dao.getTodoById(id)
+        return todoDao.getTodoById(id)
     }
 
-    override fun getTodos(): Flow<List<Todo>> {
-        return dao.getTodos()
+    override suspend fun insertTodo(todo: Todo) {
+        todoDao.insertTodo(todo)
+    }
+
+    override suspend fun deleteTodo(todo: Todo) {
+        todoDao.deleteTodo(todo)
     }
 }

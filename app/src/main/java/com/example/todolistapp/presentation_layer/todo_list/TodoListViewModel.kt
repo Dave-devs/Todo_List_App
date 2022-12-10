@@ -17,27 +17,35 @@ class TodoListViewModel @Inject constructor(
     private val repository: TodoRepository
 ) : ViewModel() {
 
+    //Command to request all our Todos from the database.
     val todos = repository.getTodos()
 
+    //Function to get the one-time event that we can perform in our app.
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     private var deletedTodo: Todo? = null
 
+    //Function to send the UiEvent of the app in a coroutine scope.
     private fun sendUiEvent(event: UiEvent) {
         viewModelScope.launch{
             _uiEvent.send(event)
         }
     }
 
+    //Asynchronous coroutine function to create the task the user could perform on our app in Flow.
     fun onEvent(event: TodoListEvent) {
+        //Check if the event is on a specific function and do the task;
         when(event) {
+            //Click on existing Todo, do this;
             is TodoListEvent.OnTodoClick -> {
                 sendUiEvent(UiEvent.Navigate(Routes.ADD_EDIT_TODO + "?todoId=$event.todo.id"))
             }
+            //Click on add new button, do this;
             is TodoListEvent.OnAddTodoClick -> {
                 sendUiEvent(UiEvent.Navigate(Routes.ADD_EDIT_TODO))
             }
+            //Click on delete existing Todo(s) with the icon, do this;
             is TodoListEvent.OnDeleteTodoClick -> {
                 viewModelScope.launch{
                     deletedTodo = event.todo
@@ -48,13 +56,19 @@ class TodoListViewModel @Inject constructor(
                     ))
                 }
             }
+            //Click on the 'Undo' from the Snackbar(to undo delete of Todo), do this;
             is TodoListEvent.OnUndoDeleteClick -> {
                 deletedTodo?.let { todo ->
                     viewModelScope.launch {
                         repository.insertTodo(todo)
+                        sendUiEvent(UiEvent.ShowSnackbar(
+                            message = "Todo undeleted!",
+                            action = null
+                        ))
                     }
                 }
             }
+            //To save the change made on existing Todo, do this;
             is TodoListEvent.OnDoneChange -> {
                 viewModelScope.launch {
                     repository.insertTodo(

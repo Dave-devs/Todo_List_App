@@ -21,13 +21,13 @@ object AppModule {
         return Room.databaseBuilder(
             app,
             TodoDatabase::class.java,
-            "todo_db"
+            "todo_database"
         ).build()
     }
 
     @Provides
     @Singleton
     fun provideTodoRepository(db: TodoDatabase): TodoRepository {
-        return TodoRepositoryImpl(db.dao)
+        return TodoRepositoryImpl(db.todoDao)
     }
 }

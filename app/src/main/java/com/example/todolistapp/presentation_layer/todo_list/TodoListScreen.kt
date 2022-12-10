@@ -2,19 +2,23 @@ package com.example.todolistapp.presentation_layer.todo_list
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.todolistapp.data.Todo
 import com.example.todolistapp.util.UiEvent
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -26,12 +30,12 @@ fun TodoListScreen(
 
     val scaffoldState = rememberScaffoldState()
 
-    /* Retrieve Ntodo list states. */
+    /* Retrieve todo list states. */
     val todos = viewModel.todos.collectAsState(initial = emptyList())
-    /*
 
+    /*
     Collect the uiEvents, so we need Launched event block
-    It will execute the code independently of the of the composable function.
+    It will execute the code independently of the composable function.
     We only want to show it once
     */
     LaunchedEffect(key1 = true) {
@@ -51,6 +55,7 @@ fun TodoListScreen(
             }
         }
     }
+
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
@@ -59,7 +64,7 @@ fun TodoListScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add"
+                    contentDescription = "Add Icon"
                 )
             }
         }
@@ -80,5 +85,52 @@ fun TodoListScreen(
                 )
             }
         }
+    }
+}
+
+
+@Composable
+fun TodoItem(
+    todo: Todo,
+    onEvent: (TodoListEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = todo.title,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                IconButton(
+                    onClick = { onEvent(TodoListEvent.OnDeleteTodoClick(todo)) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete"
+                    )
+                }
+            }
+            todo.content?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = it)
+            }
+        }
+        Checkbox(
+            checked = todo.isDone,
+            onCheckedChange = {isChecked->
+                onEvent(TodoListEvent.OnDoneChange(todo, isChecked))
+            }
+        )
     }
 }

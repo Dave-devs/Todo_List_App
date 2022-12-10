@@ -19,32 +19,28 @@ import javax.inject.Inject
 class AddEditTodoViewModel @Inject constructor(
     private val repository: TodoRepository,
     savedStateHandle: SavedStateHandle
-    /*
-    * SavedStateHandle is kinda key value object.
-    * It basically contain bunch of state variables.
-    * We could used it to restore a viewModel state after process death.
-    * But, on the other hand, it contain our navigation arguments.
-    * */
 ): ViewModel() {
 
-    /*  Returns new value passed for our NTodo variables
-        in our NTodo Entity table by passing <NTodo?>. If we want
-        to add a new value to our NTodo here it will simple stay null
+    /*  Returns new value passed for our todo variables
+        in our todo entity table by passing <Todo?>. If we want
+        to add a new value to our todo here it will simple stay null
     */
     var todo by mutableStateOf<Todo?>(null)
         private set
 
-    /* Return a new MutableState initialized with the passed in value for our title. */
+    /* Return a new MutableState initialized with the passed in value for the title. */
     var title by mutableStateOf("")
         private set
 
-    /* Return a new MutableState initialized with the passed in value for our content. */
+    /* Return a new MutableState initialized with the passed in value for the content. */
     var content by mutableStateOf("")
         private set
 
+    //Function to get the one-time event that we can perform in our app.
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+    //Function to send the UiEvent of the app in a coroutine scope.
     private fun sendUiEvent(event: UiEvent) {
         viewModelScope.launch{
             _uiEvent.send(event)
@@ -72,18 +68,22 @@ class AddEditTodoViewModel @Inject constructor(
 
     //What could the user possibly do on the app, they could;
     fun onEvent(event: AddEditTodoEvent) {
+        //Check if the event is on a specific function and do the task;
         when(event) {
+            //Function to change title on our todo.
             is AddEditTodoEvent.OnTitleChange -> {
                 title = event.title
             }
+            //Function to change content on our todo.
             is AddEditTodoEvent.OnContentChange -> {
                 content = event.content
             }
+            //Function to save the changes made on our todo.
             is AddEditTodoEvent.OnSaveTodoClick -> {
                 viewModelScope.launch {
                     if(title.isBlank()) {
                         sendUiEvent(UiEvent.ShowSnackbar(
-                            message = "Title can't be empty!",
+                            message = "Title can't be blank!",
                             action = null
                         ))
                         return@launch
