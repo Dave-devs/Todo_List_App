@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.todolistapp.util.UiEvent
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -25,7 +26,7 @@ fun AddEditTodoScreen(
         viewModel.uiEvent.collect{ event->
             when(event) {
                 is UiEvent.PopBackStack -> onPopBackStack()
-                is UiEvent.ShowSnackbar -> {
+                is UiEvent.ShowSnackBar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message,
                         actionLabel = event.action
@@ -40,6 +41,19 @@ fun AddEditTodoScreen(
             .fillMaxSize()
             .padding(16.dp),
         scaffoldState = scaffoldState,
+        backgroundColor = MaterialTheme.colors.background,
+        topBar = {
+            TopAppBar(
+                // Provide Title
+                title = {
+                    Text(
+                        text = "Add Edit Todo",
+                        color = Color.White
+                    )
+                },
+                backgroundColor = MaterialTheme.colors.secondary
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 viewModel.onEvent(AddEditTodoEvent.OnSaveTodoClick) }

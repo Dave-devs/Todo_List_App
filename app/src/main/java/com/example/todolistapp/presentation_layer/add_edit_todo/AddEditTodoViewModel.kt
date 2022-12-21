@@ -82,7 +82,7 @@ class AddEditTodoViewModel @Inject constructor(
             is AddEditTodoEvent.OnSaveTodoClick -> {
                 viewModelScope.launch {
                     if(title.isBlank()) {
-                        sendUiEvent(UiEvent.ShowSnackbar(
+                        sendUiEvent(UiEvent.ShowSnackBar(
                             message = "Title can't be blank!",
                             action = null
                         ))

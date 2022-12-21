@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,7 +42,7 @@ fun TodoListScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event->
             when(event) {
-                is UiEvent.ShowSnackbar -> {
+                is UiEvent.ShowSnackBar -> {
                     val result = scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message,
                         actionLabel = event.action
@@ -58,6 +59,19 @@ fun TodoListScreen(
 
     Scaffold(
         scaffoldState = scaffoldState,
+        backgroundColor = MaterialTheme.colors.background,
+        topBar = {
+            TopAppBar(
+                // Provide Title
+                title = {
+                    Text(
+                        text = "Todo Lists",
+                        color = Color.White
+                    )
+                },
+                backgroundColor = MaterialTheme.colors.secondary
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { viewModel.onEvent(TodoListEvent.OnAddTodoClick) }
@@ -117,7 +131,8 @@ fun TodoItem(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete"
+                        contentDescription = "Delete",
+                        tint = Color.White
                     )
                 }
             }
