@@ -67,28 +67,29 @@ fun AddEditTodoScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            TextField(
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
                 value = viewModel.title,
-                onValueChange = {
-                    viewModel.onEvent(AddEditTodoEvent.OnTitleChange(it))
-                },
-                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { viewModel.onEvent(AddEditTodoEvent.OnTitleChange(it))},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp),
                 placeholder = {
-                    Text(text = "Title")
+                    Text( "Title" )
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
-            TextField(
+            OutlinedTextField(
                 value = viewModel.content,
-                onValueChange = {
-                    viewModel.onEvent(AddEditTodoEvent.OnContentChange(it))
-                },
+                onValueChange = { viewModel.onEvent(AddEditTodoEvent.OnContentChange(it))},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp),
                 placeholder = {
-                    Text(text = "Content")
+                    Text( "Content" )
                 },
-                singleLine = false,
-                maxLines = 5,
-                modifier = Modifier.fillMaxWidth()
+                singleLine = true,
+                maxLines = 5
             )
         }
     }
