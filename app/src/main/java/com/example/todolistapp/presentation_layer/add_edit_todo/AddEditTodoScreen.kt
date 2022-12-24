@@ -38,10 +38,8 @@ fun AddEditTodoScreen(
     }
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+            .fillMaxSize(),
         scaffoldState = scaffoldState,
-        backgroundColor = MaterialTheme.colors.background,
         topBar = {
             TopAppBar(
                 // Provide Title
